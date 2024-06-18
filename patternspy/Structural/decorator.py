@@ -1,22 +1,27 @@
 # Decorator Pattern
 # allows adding new functionality to an object without altering its structure
+# In python, a function is also an object, so decorators can be designed to be used with functions
+from typing import Callable
 
-# Define a decorator that accepts a class and adds a 'greet' method
+
+# A decorator that adds a greet method to a class
 def add_greeting(cls):
-    def greet(self):
+    def greet(self) -> str:
         return f"Hello, I am an instance of {cls.__name__}."
 
     setattr(cls, "greet", greet)
     return cls
 
 
+# The Human class will have a greet method/attribute that was added by the decorator
 @add_greeting
 class Human:
     pass
 
 
+# A, seemingly, more common use case for decorators is to wrap a function
 # A decorator that accepts a function and wraps the returned contents in a http response
-def http_response(func):
+def http_response(func: Callable) -> Callable:
     def wrapper(*args, **kwargs):
         result = func(*args, **kwargs)
         return f"HTTP/1.1 200 OK\nContent-Type: text/html\n\n{result}"
@@ -30,7 +35,7 @@ def http_response(func):
 # via email instead of HTTP
 @http_response
 def process_data():
-    return f"data processed successfully"
+    return "data processed successfully"
 
 
 def main():
